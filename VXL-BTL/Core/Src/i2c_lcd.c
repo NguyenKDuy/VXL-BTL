@@ -76,21 +76,3 @@ void lcd_goto_XY (int row, int col)
 	lcd_send_cmd(pos_Addr);
 }
 
-char* to_string(int num) {
-    char *out = (char *)malloc(3 * sizeof(char));
-    if (out == NULL) {
-        return NULL;
-    }
-    if (num < 10) {
-        out[0] = '0';
-        out[1] = '0' + num;
-        out[2] = '\0';
-    } else {
-        out[0] = '0' + num / 10;
-        out[1] = '0' + num % 10;
-        out[2] = '\0';
-    }
-    return out;
-}
-
-

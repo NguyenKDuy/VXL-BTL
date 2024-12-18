@@ -15,6 +15,11 @@
 #include "traffic_light.h"
 #include <scheduler.h>
 #include <i2c_lcd.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "global.h"
+#include "string.h"
+#include "math.h"
 extern int status;
 
 #define MODE0 1
@@ -34,4 +39,39 @@ extern int status;
 #define SET_AMBERTIME 15
 #define SET_GREENTIME 16
 
+#define WAIT_INIT 		0
+#define WAIT_END		1
+
+// Status UART communication
+#define WAIT_RST 		10
+#define SEND_ADC		11
+#define WAIT_OK 		12
+
+#define MAX_BUFFER_SIZE 30
+
+extern int status_command;
+extern int status_uart;
+
+// Variables to read data
+extern uint8_t cursor;
+extern uint8_t buffer[MAX_BUFFER_SIZE];
+extern uint8_t index_buffer;
+extern uint8_t buffer_flag;
+
+// Variables to read command
+extern uint8_t command_flag;
+extern uint8_t command[MAX_BUFFER_SIZE];
+extern uint8_t command_index;
+
+// String to display console
+extern char str[50];
+
+
+extern int btn1;
+extern int btn2;
+extern int btn3;
+
+
 #endif /* INC_GLOBAL_H_ */
+
+

@@ -21,6 +21,6 @@ void setRedTime (int value);
 void fsm_SET_REDTIME();
 void fsm_SET_AMBERTIME();
 void fsm_SET_GREENTIME();
-
+int get_uart(int index);
 
 #endif /* INC_FSM_SETTINGS_H_ */

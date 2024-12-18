@@ -26,6 +26,8 @@
 #include "fsm_automatic.h"
 #include "fsm_manual.h"
 #include "fsm_settings.h"
+#include "command_read.h"
+#include "uart_com.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,6 +69,16 @@ static void MX_I2C1_Init(void);
 void LEDRED(){
 	HAL_GPIO_TogglePin(LD2_Green_Led_GPIO_Port, LD2_Green_Led_Pin);
 }
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef * huart) {
+	if(huart->Instance == USART2){
+		buffer_flag = 1;
+		buffer[index_buffer++] = cursor;
+		if (index_buffer == MAX_BUFFER_SIZE) index_buffer = 0;
+//		cursor = 'd';
+		HAL_UART_Transmit(&huart2, &cursor, 1, 50);
+		HAL_UART_Receive_IT(&huart2, &cursor, 1);
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -102,6 +114,9 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_UART_Receive_IT(&huart2, &cursor, 1);
+  uint8_t data[5] = "run";
+   HAL_UART_Transmit(&huart2, data, sizeof(data), 50);
   lcd_init();
   /* USER CODE END 2 */
 
@@ -114,9 +129,15 @@ int main(void)
   SCH_Add_Task(fsm_increase, 250, 10); //index3
   SCH_Add_Task(fsm_mode, 250, 10);
   SCH_Add_Task(fsm_INIT, 10, 0);
+
   while (1)
   {
 	  SCH_Dispatch_Tasks();
+	  if (buffer_flag == 1) {
+		  command_read_fsm();
+		  buffer_flag = 0;
+	  }
+	  uart_com_fsm(huart2);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -256,7 +277,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;

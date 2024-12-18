@@ -16,5 +16,4 @@ void fsm_AUTO_RED_GREEN();
 void fsm_INIT();
 void setCount (int index, int value);
 int getCount (int index);
-void fsm_mode_manual();
 #endif /* INC_FSM_AUTOMATIC_H_ */

@@ -4,6 +4,7 @@
  *  Created on: Oct 30, 2024
  *      Author: My Laptop
  */
+#include "global.h"
 #include <fsm_settings.h>
 #include <fsm_automatic.h>
 #include <fsm_manual.h>
@@ -34,6 +35,25 @@ void setRedTime (int value) {
 }
 void setAmberTime(int value){
 	ambertime = value;
+}
+
+int get_uart(int index) {
+	if (index == 1) {
+		int tmp = btn1;
+		btn1 = 0;
+		return tmp;
+	}
+	if (index == 2) {
+		int tmp = btn2;
+		btn2 = 0;
+		return tmp;
+	}
+	if (index == 3) {
+		int tmp = btn3;
+		btn3 = 0;
+		return tmp;
+	}
+	return 0;
 }
 
 void fsm_SET_REDTIME(){
@@ -101,7 +121,7 @@ void fsm_SET_GREENTIME(){
 }
 
 void fsm_mode () {
-	if (isKeyPressed(0)) {
+	if (isKeyPressed(0) || get_uart(1)) {
 		switch (status) {
 		case AUTO_RED_GREEN:
 			SCH_Delete_Short_Task();
@@ -167,7 +187,7 @@ void fsm_mode () {
 }
 
 void fsm_increase() {
-	if (isKeyPressed(1)) {
+	if (isKeyPressed(1) || get_uart(2)) {
 		switch(status) {
 		case MAN_RED_GREEN:
 			status = MAN_RED_YELLOW;
@@ -213,7 +233,7 @@ void fsm_increase() {
 	}
 }
 void fsm_confirm(){
-	if (isKeyPressed(2)) {
+	if (isKeyPressed(2) || get_uart(3)) {
 		switch (status) {
 		case SET_REDTIME:
 			redtime = (tmp_redtime - ambertime < 0) ? redtime : tmp_redtime;
